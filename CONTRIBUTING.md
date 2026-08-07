@@ -142,7 +142,7 @@ contribution needed a home. Propose new areas in a discussion.
 ## Development
 
 ```bash
-uv sync --extra dev
+uv sync
 uv run pytest          # full pipeline against a mock model, no API key, no cost
 uv run ruff check .
 uv run aimpoint validate

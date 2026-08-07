@@ -81,7 +81,7 @@ for the walkthrough.
 ```bash
 git clone https://github.com/aaygan29/aimpoint.git
 cd aimpoint
-uv sync --extra dev
+uv sync
 ```
 
 ```bash

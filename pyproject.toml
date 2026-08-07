@@ -23,7 +23,11 @@ dependencies = [
     "pyyaml>=6.0",
 ]
 
-[project.optional-dependencies]
+# Dev tooling is a dependency-group (PEP 735) rather than an optional-dependency extra,
+# because uv installs groups by default on both `uv sync` and `uv run`. As an extra it had
+# to be requested on every single invocation, and any command that forgot silently
+# recreated the environment without it, which is how ruff went missing mid-CI.
+[dependency-groups]
 dev = [
     "pytest>=8.0",
     "pytest-cov>=5.0",

@@ -20,6 +20,13 @@ jobs:
       matrix:
         python-version: ["3.11", "3.12"]
 
+    # Set once for the whole job rather than passed to the install step alone. `uv run`
+    # re-syncs before each command, so a version given only to `uv sync` gets silently
+    # reverted to .python-version by the next step, quietly rebuilding the environment
+    # underneath the tools that were about to run.
+    env:
+      UV_PYTHON: ${{ matrix.python-version }}
+
     steps:
       - uses: actions/checkout@v4
 
@@ -29,7 +36,7 @@ jobs:
           enable-cache: true
 
       - name: Install
-        run: uv sync --extra dev --python ${{ matrix.python-version }}
+        run: uv sync
 
       - name: Lint
         run: uv run ruff check .
