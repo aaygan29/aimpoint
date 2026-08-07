@@ -1,0 +1,28 @@
+# Authors
+
+Aimpoint is built by its contributors. Anyone with a merged environment is credited here and
+as an author on the Aimpoint paper.
+
+## Maintainers
+
+| Name | Affiliation | Contact |
+| --- | --- | --- |
+| Aayush Gandhi | The Sapient Company | aaygan29@gmail.com / [ORCID](https://orcid.org/0009-0003-4649-0367) |
+
+## Environment authors
+
+| Environment | Area | Author(s) |
+| --- | --- | --- |
+| [`target_triage`](environments/biomedical_rd/target_triage/) | biomedical-rd | Aayush Gandhi |
+
+## How credit works
+
+- **Environment author.** Merge an environment, get listed here and authored on the paper. We
+  ask that you stay reachable to maintain it, since an environment nobody will fix is one
+  nobody should trust.
+- **Reviewer.** Contributors who have merged an environment are invited to review others.
+  Reviewing is where most of the quality comes from and is credited accordingly.
+- **Maintainer.** Invited from among active reviewers.
+
+Fixing a flaw in your own merged environment, or reporting one, is the most valuable thing
+anyone does here and is treated that way rather than as a mark against the work.

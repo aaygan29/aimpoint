@@ -1,0 +1,131 @@
+name: Environment proposal
+description: Propose a new beneficial-capability environment, before building it.
+title: "[Proposal] "
+labels: ["proposal"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Thanks for proposing. A proposal costs an hour; an environment costs weeks, so this
+        step exists to save you the weeks if the idea needs redirecting.
+
+        Read [rubrics/environment-proposal.md](../blob/main/rubrics/environment-proposal.md)
+        first. **Criterion 2, defensive asymmetry, is a hard gate** and is the most common
+        reason a proposal is sent back.
+
+  - type: input
+    id: title
+    attributes:
+      label: Environment name
+      placeholder: incident_triage
+    validations:
+      required: true
+
+  - type: dropdown
+    id: area
+    attributes:
+      label: Area
+      options:
+        - safety-research
+        - cyber-defense
+        - pandemic-preparedness
+        - information-integrity
+        - biomedical-rd
+        - other (explain below)
+    validations:
+      required: true
+
+  - type: textarea
+    id: capability
+    attributes:
+      label: What capability does this measure?
+      description: One paragraph. Be specific about the skill, not the topic.
+    validations:
+      required: true
+
+  - type: textarea
+    id: bottleneck
+    attributes:
+      label: What bottleneck does it unblock?
+      description: |
+        Name the concrete thing that becomes possible if a model got much better at this,
+        which is not possible now. Who is blocked today, and how do you know? Firsthand
+        experience is the strongest answer.
+    validations:
+      required: true
+
+  - type: textarea
+    id: asymmetry
+    attributes:
+      label: Defensive asymmetry (GATE)
+      description: |
+        Name the closest offensive analogue of this capability, then say why competence does
+        not transfer. Write the most harmful thing a model that maxed this environment could
+        do better than before; if that sentence is easy to write, the gate fails.
+
+        "The topic is beneficial" is not an argument. The strong version is structural: the
+        environment's tools cannot express the harmful use at all.
+      placeholder: |
+        Capability: ...
+        Closest offensive analogue: ...
+        Why it does not transfer: ...
+    validations:
+      required: true
+
+  - type: textarea
+    id: scoring
+    attributes:
+      label: How is the headline scored without an LLM judge?
+      description: |
+        Deterministic ground truth: recorded outcomes, simulator execution, a frozen
+        database, a formal check. If you need a judge for the primary score, the task is
+        probably not specified tightly enough yet.
+    validations:
+      required: true
+
+  - type: textarea
+    id: baseline
+    attributes:
+      label: What is the reference baseline?
+      description: |
+        The policy a competent practitioner with the same data and no special insight would
+        use. It should be hard to beat. A strawman here makes any model look good.
+    validations:
+      required: true
+
+  - type: textarea
+    id: proxy
+    attributes:
+      label: What is the flawed metric a hurried designer would have shipped?
+      description: |
+        You will implement this as `proxy_score`. The harness reports the gap between it and
+        the real score, which is how specification gaming becomes measurable.
+    validations:
+      required: true
+
+  - type: textarea
+    id: data
+    attributes:
+      label: Data
+      description: Source, licence, whether it can be redistributed, and roughly how large.
+    validations:
+      required: true
+
+  - type: textarea
+    id: difficulty
+    attributes:
+      label: Why will this still be hard in two model generations?
+      description: |
+        Difficulty should come from the problem being genuinely hard, not from added steps.
+        If you found this by generating many candidates and keeping whatever the current
+        model fails, say so; that approach selects for quirks the next release removes.
+    validations:
+      required: true
+
+  - type: textarea
+    id: background
+    attributes:
+      label: Your relevant background
+      description: A sentence or two. Domain expertise is the strongest signal a bottleneck is real.
+    validations:
+      required: true

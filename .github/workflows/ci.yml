@@ -1,0 +1,66 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  check:
+    # Everything here runs against a scripted mock model, so a full pipeline check costs
+    # nothing and needs no API key. Contributors get a real signal on every push, which is
+    # the difference between a suite people run and one they skip.
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        python-version: ["3.11", "3.12"]
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Install uv
+        uses: astral-sh/setup-uv@v5
+        with:
+          enable-cache: true
+
+      - name: Install
+        run: uv sync --extra dev --python ${{ matrix.python-version }}
+
+      - name: Lint
+        run: uv run ruff check .
+
+      - name: Format check
+        run: uv run ruff format --check .
+
+      - name: Environment contract
+        # Fails the build if any environment violates the harness contract: judge-free
+        # scoring, mandatory baselines, pinned snapshot, argued beneficial case.
+        run: uv run aimpoint validate
+
+      - name: Tests
+        run: uv run pytest -q
+
+  no-live-calls-at-eval-time:
+    # A scorer or tool that reaches the network at eval time silently destroys
+    # reproducibility, and the resulting numbers stay comparable-looking. Cheap to check,
+    # expensive to discover later.
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Fail if environment code imports a network client
+        run: |
+          if grep -rnE '^\s*(import|from)\s+(httpx|requests|urllib|aiohttp)' \
+               environments/ --include='*.py'; then
+            echo
+            echo "Environment code must not import a network client."
+            echo "Eval-time code reads frozen snapshots only. Data fetching belongs in"
+            echo "scripts/build_snapshot.py, which runs once and is not part of an eval."
+            exit 1
+          fi
+          echo "ok: no network clients in environment code"

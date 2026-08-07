@@ -1,0 +1,24 @@
+# Python-generated files
+__pycache__/
+*.py[oc]
+build/
+dist/
+wheels/
+*.egg-info
+
+# Virtual environments
+.venv
+
+# Inspect eval logs. Transcripts can be large and contain full model outputs; run cards
+# in results/ are the committed artifact, not these.
+logs/
+.inspect/
+
+# Local tooling
+.pytest_cache/
+.ruff_cache/
+.coverage
+htmlcov/
+
+# OS
+.DS_Store

@@ -1,0 +1,9 @@
+{
+ "name": "target_triage",
+ "version": "0",
+ "cutoff": "2015-01-01",
+ "digest": "43b2ab28467050321e812fb90e79cc0ce1c334d2d777d5d52fe3a8fced3cabb7",
+ "sources": {
+  "chembl": "https://www.ebi.ac.uk/chembl/api/data (release current at build time)"
+ }
+}
