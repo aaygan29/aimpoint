@@ -18,7 +18,6 @@ from pathlib import Path
 from typing import Any
 
 from inspect_ai import eval as inspect_eval
-from inspect_ai.model import GenerateConfig
 
 from aimpoint.core.determinism import derive_seed
 from aimpoint.core.env import BeneficialEnv, Split
@@ -171,7 +170,13 @@ def run(
             task,
             model=model,
             log_dir=resolved_log_dir,
-            config=GenerateConfig(seed=replicate_seed),
+            # Generation settings are passed as keyword arguments, not wrapped in a
+            # `config=` object. Inspect's `eval()` has no `config` parameter and forwards
+            # unknown keywords into `GenerateConfig(**kwargs)`, so `config=GenerateConfig(...)`
+            # becomes `GenerateConfig(config=...)` and raises before a single sample runs.
+            # That is the whole of `aimpoint run-env` failing on a clean install, and it was
+            # invisible because the tests drove `inspect_eval` directly and never this path.
+            seed=replicate_seed,
             display="none",
             **eval_kwargs,
         )
