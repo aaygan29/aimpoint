@@ -1,0 +1,10 @@
+{
+  "name": "safety_judgment_corpus",
+  "version": "1.0",
+  "cutoff": "2026-08-10",
+  "digest": "e6176f0f83930af67dc767e8bac825f4eac5e8a97b89556eec950ae93504be09",
+  "sources": {
+    "corpus": "hand-authored v1.0, 31 cases",
+    "taxonomy": "hand-authored v1.0, 18 elements, 11 rules"
+  }
+}
