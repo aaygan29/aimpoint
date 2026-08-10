@@ -15,7 +15,10 @@ classifiers = [
     "Programming Language :: Python :: 3.12",
 ]
 dependencies = [
-    "inspect-ai>=0.3.130",
+    # Floor is the version this is verified against. `eval()` takes generation
+    # settings as keyword arguments; older releases wrapped them in a `config`
+    # object, and the two forms are not compatible.
+    "inspect-ai>=0.3.252",
     "pydantic>=2.7",
     "numpy>=1.26",
     "click>=8.1",
