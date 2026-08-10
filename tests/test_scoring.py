@@ -88,6 +88,64 @@ def test_padding_does_not_dilute_the_negative_penalty():
     assert padded == pytest.approx(short, abs=1e-9)
 
 
+def test_omitting_costs_reproduces_the_uniform_metric_exactly():
+    """The compatibility guarantee. Environments that price nothing must be unaffected."""
+    negatives = frozenset({"bad", "worse"})
+    submission = _sub(("bad", 0.7), ("x", 0.2), ("worse", 0.4))
+    assert ranking.negative_burden(submission, negatives) == pytest.approx(
+        ranking.negative_burden(submission, negatives, costs={})
+    )
+    assert ranking.negative_burden(submission, negatives) == pytest.approx(
+        ranking.negative_burden(submission, negatives, costs={"bad": 1.0, "worse": 1.0})
+    )
+
+
+def test_an_expensive_mistake_costs_more_than_a_cheap_one():
+    """The point of the feature: identical behaviour, different mistake, different penalty."""
+    negatives = frozenset({"serious", "trivial"})
+    costs = {"serious": 3.0, "trivial": 1.0}
+    expensive = ranking.negative_burden(_sub(("serious", 0.8)), negatives, costs)
+    cheap = ranking.negative_burden(_sub(("trivial", 0.8)), negatives, costs)
+    assert expensive > cheap
+
+
+def test_only_cost_ratios_matter():
+    """Scaling every cost must not move the score, so environments need not invent a unit."""
+    negatives = frozenset({"a", "b", "c"})
+    submission = _sub(("a", 0.6), ("q", 0.3), ("c", 0.9))
+    base = {"a": 3.0, "b": 1.0, "c": 2.0}
+    scaled = {k: v * 7.5 for k, v in base.items()}
+    assert ranking.negative_burden(submission, negatives, base) == pytest.approx(
+        ranking.negative_burden(submission, negatives, scaled)
+    )
+
+
+def test_cost_weighted_burden_stays_in_range_and_saturates_at_the_worst_case():
+    """Listing the costliest negatives at full confidence must be the maximum, not beyond it."""
+    negatives = frozenset({"cheap", "dear"})
+    costs = {"cheap": 1.0, "dear": 5.0}
+    worst = ranking.negative_burden(_sub(("dear", 1.0), ("cheap", 1.0)), negatives, costs)
+    assert worst == pytest.approx(1.0)
+    for submission in (_sub(("dear", 1.0)), _sub(("cheap", 0.5), ("dear", 0.9))):
+        assert 0.0 <= ranking.negative_burden(submission, negatives, costs) <= 1.0
+
+
+def test_adding_an_expensive_negative_does_not_forgive_the_cheap_ones():
+    """The normaliser regression.
+
+    Normalising against arbitrary negatives rather than the costliest ones would mean that
+    introducing one expensive entry into an answer key silently deflated the penalty for
+    every cheap mistake already in it, changing published scores for reasons unrelated to
+    any model.
+    """
+    submission = _sub(("cheap", 0.9))
+    without = ranking.negative_burden(submission, frozenset({"cheap"}), {"cheap": 1.0})
+    with_expensive = ranking.negative_burden(
+        submission, frozenset({"cheap", "dear"}), {"cheap": 1.0, "dear": 9.0}
+    )
+    assert with_expensive <= without
+
+
 def test_recall_at_any_is_trivially_gamed():
     """Documented as gameable, so the test pins that property rather than hiding it."""
     positives = frozenset({"a", "b"})

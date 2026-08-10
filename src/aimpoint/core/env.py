@@ -13,6 +13,7 @@ judged metric by accident, because there is nothing in scope to judge with.
 from __future__ import annotations
 
 from abc import ABC, abstractmethod
+from collections.abc import Mapping
 from dataclasses import dataclass, field
 from enum import StrEnum
 from pathlib import Path
@@ -83,11 +84,30 @@ class RankedGroundTruth(GroundTruth):
     `negatives` is tracked separately from "everything not positive" because knowing that
     a candidate was actively tried and failed is different evidence from never having been
     tried, and a scorer that treats them alike gives no credit for avoiding known dead ends.
+
+    `negative_costs` prices the false positives against each other. Leaving it empty means
+    every wrong entry costs the same, which is the right default when a domain has no
+    principled way to rank its mistakes. Many domains do. Escalating a spurious
+    agranulocytosis signal consumes review capacity that escalating a spurious nausea signal
+    does not, and a false accusation of one kind can be far more damaging to a user than a
+    false accusation of another. Where that ordering is known and defensible, writing it down
+    is more honest than letting a uniform metric imply the mistakes are interchangeable.
+
+    Costs are relative, not absolute: only their ratios affect the score, because the burden
+    they feed is normalised against the worst case the model could have produced. An
+    environment should therefore ship the ratios it can argue for and leave the rest at 1.0,
+    rather than inventing a unit.
     """
 
     positives: frozenset[str] = frozenset()
     negatives: frozenset[str] = frozenset()
     abstention_is_correct: bool = False
+    #: Relative cost of listing each negative. Missing entries cost 1.0.
+    negative_costs: Mapping[str, float] = field(default_factory=dict)
+
+    def cost_of(self, item_id: str) -> float:
+        """Relative cost of listing one known-wrong entry."""
+        return float(self.negative_costs.get(item_id, 1.0))
 
 
 @dataclass(frozen=True)

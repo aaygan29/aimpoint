@@ -294,7 +294,7 @@ class SafetyJudgmentEnv(BeneficialEnv):
         # Specificity: how much weight went onto elements that are not present. Weighted by
         # rank and confidence, so a hedged flag at the bottom of the list costs less than a
         # confident one at the top, which is the difference a user actually experiences.
-        overflagging = ranking.negative_burden(submission, truth.negatives)
+        overflagging = ranking.negative_burden(submission, truth.negatives, truth.negative_costs)
         avoidance = 1.0 - overflagging
         core = _harmonic(detection, avoidance)
 
