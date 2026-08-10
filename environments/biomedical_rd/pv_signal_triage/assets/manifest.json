@@ -1,0 +1,9 @@
+{
+  "name": "faers_pv_signals",
+  "version": "1.0",
+  "cutoff": "2016-01-01",
+  "digest": "6931e77e2cb07e9e7a8d06c96923b509842119809fc709bdd515fdace16856f5",
+  "sources": {
+    "FAERS": "pre 2015Q1+2015Q2+2015Q3+2015Q4, post 2021Q1+2021Q2+2021Q3+2021Q4"
+  }
+}

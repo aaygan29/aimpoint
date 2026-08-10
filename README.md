@@ -68,6 +68,7 @@ flawed metric a hurried designer would have shipped and reporting the difference
 | --- | --- | --- | --- | --- |
 | biomedical-rd | [`target_triage`](environments/biomedical_rd/target_triage/) | reference | 21 | yes |
 | ai-safety | [`safety_judgment`](environments/ai_safety/safety_judgment/) | candidate | 67 | yes |
+| biomedical-rd | [`pv_signal_triage`](environments/biomedical_rd/pv_signal_triage/) | candidate | 151 | yes |
 
 Areas follow the article's list, extended where a contribution needed a home:
 `safety-research`, `cyber-defense`, `pandemic-preparedness`, `information-integrity`,
@@ -176,6 +177,39 @@ taxonomy identifiers, which is what makes it safe to train against and not only 
 with. Read its [known limits](environments/ai_safety/safety_judgment/environment.toml) before
 quoting any number: the corpus is hand-authored by one person and needs independent
 multi-rater adjudication first.
+
+## pv_signal_triage: the same pathology, in medicine
+
+[`pv_signal_triage`](environments/biomedical_rd/pv_signal_triage/) applies the
+`safety_judgment` design to pharmacovigilance, where the equivalent of over-refusal is alert
+fatigue.
+
+A signal queue is a list of drug/event pairs that cleared a statistical screen. Clearing it is
+not evidence of a drug effect: most disproportionate pairs reflect confounding by indication,
+publicity driving reporting, or the background frequency of a common term. The failure that
+degrades real pharmacovigilance is not missing signals, it is drowning in false ones until the
+alerts get overridden by default, at which point the real signal is missed too. The metric
+these systems are defended with, recall on the signals that turned out real, cannot see that.
+
+The model receives one drug's 2015 queue from FAERS and ranks which pairs become strong
+signals by 2021. 49 drugs, 151 scenarios, built from 3.0M deduplicated reports counting only
+primary and secondary suspect drugs.
+
+| Policy | True score | Recall-only proxy |
+| --- | --- | --- |
+| `noop` (floor) | 0.000 | 0.000 |
+| `escalate_everything` (adversarial) | 0.264 | **1.000** |
+| `prr_ranking` (reference) | **0.333** | 0.868 |
+| perfect triage (oracle) | 0.999 | 1.000 |
+
+The gap is real but smaller than `safety_judgment`'s, because escalating everything is
+genuinely less catastrophic when 30% of the queue does hold up. That is stated in
+`known_limits` rather than tuned away, along with the fact that the signal thresholds were
+raised after measurement showed the first version was degenerate.
+
+The answer key recovers documented pharmacology it was never told about: canagliflozin's
+ketoacidosis and acute kidney injury, montelukast's neuropsychiatric cluster that earned a
+boxed warning in 2020, levofloxacin's tendon and cognitive events.
 
 ## Prior art, stated honestly
 
