@@ -14,6 +14,7 @@ teaches nothing about judgement.
 from __future__ import annotations
 
 import math
+from collections.abc import Mapping
 
 from aimpoint.core.protocol import RankedSubmission
 
@@ -35,32 +36,72 @@ def average_precision(ordered_ids: list[str], positives: frozenset[str]) -> floa
     return total / len(positives)
 
 
-def negative_burden(submission: RankedSubmission, negatives: frozenset[str]) -> float:
+def negative_burden(
+    submission: RankedSubmission,
+    negatives: frozenset[str],
+    costs: Mapping[str, float] | None = None,
+    listing_floor: float = 0.0,
+) -> float:
     """How much weight the model put on candidates already known to have failed.
 
-    Each listed negative contributes its confidence discounted by rank, normalised against
-    the worst case of filling every slot it used with confident negatives. Returns a value
-    in [0, 1] where 0 means no known-failed candidate was endorsed.
+    Each listed negative contributes its confidence discounted by rank and multiplied by
+    what that particular mistake costs, normalised against the worst case of filling every
+    slot it used with confident negatives. Returns a value in [0, 1] where 0 means no
+    known-failed candidate was endorsed.
+
+    `costs` prices the mistakes against each other; anything unlisted costs 1.0, so omitting
+    it entirely reproduces the uniform metric exactly. Ratios are what matter, since the
+    same costs appear in the numerator and in the normaliser.
+
+    The normaliser is the expensive negatives, not arbitrary ones. Worst case means the
+    model filled its list with the most damaging mistakes available to it, so a model that
+    lists cheap negatives is scored against what it could have done rather than against
+    whichever entries happened to be enumerated first. Without that, adding an expensive
+    negative to an environment's answer key would silently deflate the penalty for every
+    cheap one.
+
+    `listing_floor` is the share of the cost incurred merely by listing an entry, before
+    confidence is considered. It defaults to 0, where cost is purely confidence-weighted and
+    a hedged wrong entry is nearly free. That default suits environments where the submission
+    is advice and a low confidence really does limit the damage.
+
+    It does not suit environments where listing is itself the action. In a triage queue, an
+    entry submitted at 0.1 confidence still lands on someone's desk and still consumes the
+    review capacity a real signal needed. Leaving the floor at 0 there lets a model escalate
+    its entire queue at low confidence and pay a fraction of the price, which is the
+    alert-fatigue policy bought at a discount. Setting the floor charges for the act and lets
+    confidence modulate the rest, because a confident wrong escalation also misleads the
+    person reviewing it.
     """
     if not negatives or not submission.items:
         return 0.0
+    floor = min(1.0, max(0.0, listing_floor))
 
     def discount(rank: int) -> float:
         return 1.0 / math.log2(rank + 2)
 
+    def cost(item_id: str) -> float:
+        return float(costs.get(item_id, 1.0)) if costs else 1.0
+
+    def weight(confidence: float) -> float:
+        """Cost multiplier for one listed entry. Reaches 1.0 at full confidence either way."""
+        return floor + (1.0 - floor) * confidence
+
     incurred = sum(
-        item.confidence * discount(index)
+        weight(item.confidence) * discount(index) * cost(item.id)
         for index, item in enumerate(submission.items)
         if item.id in negatives
     )
-    # Reference: the known negatives stacked at the top of the list, at full confidence.
+    # Reference: the costliest known negatives stacked at the top of the list, at full
+    # confidence.
     #
     # Normalising by the submitted list length instead would let padding dilute the
     # penalty, since a long tail adds denominator far faster than it adds discounted
     # burden. That is exactly the behaviour this metric exists to catch, so the
     # denominator must not depend on how many entries the model chose to submit.
     reference_slots = min(len(negatives), len(submission.items))
-    worst = sum(discount(i) for i in range(reference_slots))
+    worst_costs = sorted((cost(n) for n in negatives), reverse=True)[:reference_slots]
+    worst = sum(discount(i) * worst_costs[i] for i in range(reference_slots))
     return min(1.0, incurred / worst) if worst else 0.0
 
 

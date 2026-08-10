@@ -22,3 +22,6 @@ htmlcov/
 
 # OS
 .DS_Store
+
+# openFDA response cache (build-time only, never read at eval time)
+environments/**/assets/.cache/
