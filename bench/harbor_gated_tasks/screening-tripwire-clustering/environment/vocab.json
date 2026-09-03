@@ -1,0 +1,13 @@
+{
+  "version": "1.0",
+  "tokens": [
+    "epithelial_positive",
+    "epithelial_negative",
+    "proliferation_positive",
+    "proliferation_negative",
+    "tp53_low",
+    "tp53_normal",
+    "silhouette_selected_k",
+    "consensus_stable"
+  ]
+}
