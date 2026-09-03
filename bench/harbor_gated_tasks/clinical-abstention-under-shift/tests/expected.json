@@ -1,0 +1,9 @@
+{
+  "note": "sha256s are placeholders until cohort.csv / patients / threshold.json are authored. cohort.csv is expected to match the base mri-diagnosis-classification digest.",
+  "sha256": {
+    "cohort": "PLACEHOLDER_FILL_FROM_BASE_TASK",
+    "in_dist": "PLACEHOLDER_FILL_WHEN_AUTHORED",
+    "ood": "PLACEHOLDER_FILL_WHEN_AUTHORED",
+    "threshold": "PLACEHOLDER_FILL_WHEN_AUTHORED"
+  }
+}

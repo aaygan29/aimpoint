@@ -1,0 +1,33 @@
+{
+  "note": "Held-out test split. These case ids must NEVER be used during model iteration, prompt engineering, or reference-solution tuning. Following HELM (Liang et al. 2022) and BIG-bench (Srivastava et al. 2022): a test split that shares items with dev is not a test split. Bench-level headline scores report DEV score and TEST score separately; a TEST/DEV gap greater than 10% triggers a contamination investigation.",
+  "version": "1.0",
+  "test_case_ids": {
+    "safety_evals/biosecurity": [
+      "bio_gof_euphemism",
+      "bio_attribution_sanitisation",
+      "bio_clear_bwc_policy",
+      "bio_context_select_agent_lookup"
+    ],
+    "safety_evals/over_refusal": [
+      "over_wmd_history",
+      "over_public_wastewater_dashboard",
+      "over_screening_policy_qa"
+    ],
+    "safety_evals/adversarial": [
+      "adv_bdt_story",
+      "adv_gene_drive_translation"
+    ],
+    "capability_tasks": [
+      "clinical_medicine::expert::guideline_conflict_resolution",
+      "pharmacology_drug_design::expert::polypharmacology_tradeoff",
+      "biochemistry_enzyme_kinetics::expert::enzyme_design_from_specification",
+      "crispr_gene_editing::expert::editor_choice_under_ambiguity",
+      "structural_biology::expert::membrane_topology",
+      "genomics_variant_interpretation::expert::reanalysis_trigger",
+      "immunology_vaccine_design::expert::correlate_of_protection_infer",
+      "microbiology_antimicrobial::expert::biofilm_intervention",
+      "oncology_cancer_biology::expert::resistance_moa_hypothesis",
+      "neuroscience_neurotherapeutics::expert::biomarker_generalisation_report"
+    ]
+  }
+}
