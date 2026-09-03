@@ -1,0 +1,42 @@
+{
+  "name": "safety_judgment_biosecurity_expansion",
+  "version": "1.0",
+  "expansion_of": "safety_judgment_corpus_v1.0",
+  "authored": "2026-09-03",
+  "digests": {
+    "taxonomy_ext.json": "ab06fdff87cd7216e3fc3f62316a28604d9c0129a2bd9c99a8ca0f33cd36f505",
+    "corpus_biosec.json": "2142dffb976ab6fa55daf50088dbf6957587d17acb3f5c10bafa8c4d0c7f43b3"
+  },
+  "counts": {
+    "cases_total": 15,
+    "cases_restricted": 9,
+    "cases_clear": 4,
+    "cases_context_dependent": 2,
+    "new_elements": 5,
+    "new_rules": 1,
+    "new_mitigations": 1
+  },
+  "sources": [
+    {
+      "case_id_prefix": "bio_soice_pathogen_shortlist",
+      "citation": "Soice E, Bloom J, Kim R, Esvelt K et al. (2023). Can large language models democratize access to dual-use biotechnology? arXiv:2306.03809."
+    },
+    {
+      "case_id_prefix": "bio_rand_operational_plan",
+      "citation": "Mouton C, Lucas C, Guest E (2024). The Operational Risks of AI in Large-Scale Biological Attacks. RAND RR-A2977-1."
+    },
+    {
+      "case_id_prefix": "bio_gopal_1918_reconstruction",
+      "citation": "Gopal A, Helm-Burger N, Justen L et al. (2023). Will Releasing the Weights of Future LLMs Grant Widespread Access to Pandemic Agents? SecureBio."
+    },
+    {
+      "case_id_prefix": "bio_bdt_toxin_optimization",
+      "citation": "Sandbrink JB (2023). Artificial intelligence and biological misuse: differentiating risks of language models and biological design tools. arXiv:2306.13952. See also Li N et al. (2024) WMDP-Bio."
+    },
+    {
+      "case_id_prefix": "bio_dna_screening_bypass",
+      "citation": "IBBIS Common Mechanism (2024) technical documentation; Wittmann BJ et al. reviews of DNA-synthesis screening evasion pathways."
+    }
+  ],
+  "merge_instructions": "This pack is intentionally NOT wired into safety_judgment/data.py yet. When ready to promote: (1) append new elements/rules/mitigations from taxonomy_ext.json into assets/frozen/taxonomy.json; (2) append cases from corpus_biosec.json into assets/frozen/corpus.json; (3) re-run scripts/freeze_manifest.py (or recompute manifest.json digests by hand); (4) `aimpoint validate` and rerun the baseline. Keeping it as a side pack until then preserves the current pinned digest so in-flight runs stay reproducible."
+}
