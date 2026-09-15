@@ -7,13 +7,13 @@ as an author on the Aimpoint paper.
 
 | Name | Affiliation | Contact |
 | --- | --- | --- |
-| Aayush Gandhi | The Sapient Company | aaygan29@gmail.com / [ORCID](https://orcid.org/0009-0003-4649-0367) |
+| The authors | withheld | withheld |
 
 ## Environment authors
 
 | Environment | Area | Author(s) |
 | --- | --- | --- |
-| [`target_triage`](environments/biomedical_rd/target_triage/) | biomedical-rd | Aayush Gandhi |
+| [`target_triage`](environments/biomedical_rd/target_triage/) | biomedical-rd | The authors |
 
 ## How credit works
 

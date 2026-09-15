@@ -2,7 +2,6 @@
 
 **Open-source environments for the capabilities we want AI to have.**
 
-[![CI](https://github.com/aaygan29/aimpoint/actions/workflows/ci.yml/badge.svg)](https://github.com/aaygan29/aimpoint/actions/workflows/ci.yml)
 [![License](https://img.shields.io/badge/license-Apache%202.0-black.svg)](LICENSE)
 [![Environments](https://img.shields.io/badge/environments-3-white.svg)](environments/)
 [![Built on Inspect](https://img.shields.io/badge/built%20on-Inspect-105864.svg)](https://inspect.aisi.org.uk/)
@@ -93,7 +92,7 @@ becomes a merged environment, and
 ## Quickstart
 
 ```bash
-git clone https://github.com/aaygan29/aimpoint.git
+git clone <this repository URL>
 cd aimpoint
 uv sync
 ```

@@ -5,7 +5,7 @@ description = "A harness for beneficial-capability environments: reproducible, j
 readme = "README.md"
 requires-python = ">=3.11"
 license = { text = "Apache-2.0" }
-authors = [{ name = "Aayush Gandhi" }]
+authors = [{ name = "The authors" }]
 keywords = ["ai-safety", "evaluation", "rl-environment", "inspect-ai", "beneficial-ai"]
 classifiers = [
     "Development Status :: 3 - Alpha",

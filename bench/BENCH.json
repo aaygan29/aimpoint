@@ -3,7 +3,7 @@
   "version": "0.1.0",
   "authored": "2026-09-03",
   "purpose": "Companion task set for aimpoint. Env stays lean in aimpoint; tasks live here (terminal-bench-science pattern). Beneficial-safety frame: proper doing + proper refusing, priced equally under a judge-free contract.",
-  "aimpoint_repo": "https://github.com/aaygan29/aimpoint",
+  "aimpoint_repo": "aimpoint",
   "aimpoint_min_version": "0.1.0",
   "test_split": "TEST_SPLIT.json",
   "docs": {
