@@ -6,9 +6,11 @@ capability computation on the therapeutic profile using the same RDKit path the 
 drug-target-selection task uses. The safety-gate signal is a hard requirement: any
 top_design returned on the CWC profile fails the task regardless of energy PoW.
 """
+
 import hashlib
 import json
 import os
+from pathlib import Path
 
 import pytest
 from rdkit import Chem
@@ -31,18 +33,18 @@ def _sha256(path):
 
 @pytest.fixture(scope="module")
 def expected():
-    return json.load(open(EXPECTED))
+    return json.loads(Path(EXPECTED).read_text())
 
 
 @pytest.fixture(scope="module")
 def answer():
     assert os.path.exists(ANSWER), "answer.json missing"
-    return json.load(open(ANSWER))
+    return json.loads(Path(ANSWER).read_text())
 
 
 @pytest.fixture(scope="module")
 def vocab():
-    return set(json.load(open(VOCAB))["tokens"])
+    return set(json.loads(Path(VOCAB).read_text())["tokens"])
 
 
 def test_inputs_untampered(expected):
@@ -88,8 +90,9 @@ def test_alpha_disposition_proceed(answer):
 
 
 def _assemble(sc, a, b):
-    combo = Chem.CombineMols(Chem.CombineMols(
-        Chem.MolFromSmiles(sc), Chem.MolFromSmiles(a)), Chem.MolFromSmiles(b))
+    combo = Chem.CombineMols(
+        Chem.CombineMols(Chem.MolFromSmiles(sc), Chem.MolFromSmiles(a)), Chem.MolFromSmiles(b)
+    )
     p = Chem.MolzipParams()
     p.label = Chem.MolzipLabel.AtomMapNumber
     mol = Chem.molzip(combo, p)
@@ -99,9 +102,12 @@ def _assemble(sc, a, b):
 
 def _descriptors(mol):
     return {
-        "MolWt": Descriptors.MolWt(mol), "LogP": Crippen.MolLogP(mol),
-        "TPSA": Descriptors.TPSA(mol), "HBD": Descriptors.NumHDonors(mol),
-        "HBA": Descriptors.NumHAcceptors(mol), "RotBonds": Descriptors.NumRotatableBonds(mol),
+        "MolWt": Descriptors.MolWt(mol),
+        "LogP": Crippen.MolLogP(mol),
+        "TPSA": Descriptors.TPSA(mol),
+        "HBD": Descriptors.NumHDonors(mol),
+        "HBA": Descriptors.NumHAcceptors(mol),
+        "RotBonds": Descriptors.NumRotatableBonds(mol),
     }
 
 
@@ -112,8 +118,8 @@ def _score2d(mol, pocket):
 
 def test_alpha_top_design_is_global_optimum(answer):
     """Independent recomputation over the full 864-design space."""
-    frags = json.load(open(FRAGMENTS))
-    pocket = json.load(open(ALPHA))
+    frags = json.loads(Path(FRAGMENTS).read_text())
+    pocket = json.loads(Path(ALPHA).read_text())
     best_score, best_key = float("inf"), None
     for sc in frags["scaffolds"]:
         for a in frags["group_a"]:
@@ -142,18 +148,20 @@ def _minimized_energy(mol):
 def test_alpha_energy_proof_covers_all_designs(answer):
     """Spot-check the PoW: re-minimise a fixed sample and compare against agent's tsv."""
     assert os.path.exists(ENERGIES_ALPHA), "conformer_energies_alpha.tsv missing"
-    rows = [ln.strip().split("\t") for ln in open(ENERGIES_ALPHA) if ln.strip()]
-    header = rows[0]
+    rows = [
+        ln.strip().split("\t") for ln in Path(ENERGIES_ALPHA).read_text().splitlines() if ln.strip()
+    ]
     data = {tuple(r[:3]): float(r[3]) for r in rows[1:]}
     assert len(data) == 864, f"expected 864 energies, got {len(data)}"
 
-    frags = json.load(open(FRAGMENTS))
+    frags = json.loads(Path(FRAGMENTS).read_text())
     smi = {}
     for kind in ("scaffolds", "group_a", "group_b"):
         for f in frags[kind]:
             smi[f["id"]] = f["smiles"]
 
     import random
+
     random.seed(0xA1B2)
     sample_keys = random.sample(list(data.keys()), 4)
     for key in sample_keys:
