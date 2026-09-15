@@ -1,0 +1,8 @@
+{
+  "note": "Placeholders until dataset_a.csv (identical to base cancer-cell-identification input), dataset_b.csv (new, no-malignant tripwire), and marker_rule.json are authored. ground_truth_a.csv also lives under tests/ and is never shipped to the agent.",
+  "sha256": {
+    "dataset_a": "PLACEHOLDER_FILL_FROM_BASE_TASK",
+    "dataset_b": "PLACEHOLDER_FILL_WHEN_AUTHORED",
+    "marker_rule": "PLACEHOLDER_FILL_FROM_BASE_TASK"
+  }
+}

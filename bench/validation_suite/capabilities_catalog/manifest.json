@@ -1,0 +1,28 @@
+{
+  "name": "aimpoint_capabilities_catalog",
+  "version": "1.0",
+  "authored": "2026-09-03",
+  "digest_catalog_json": "d79874c3fbf1e062393bfb90f5ba0b40865c91e0e3c899f2836946932617022d",
+  "counts": {
+    "total": 100,
+    "by_domain": {
+      "clinical_medicine": 10,
+      "pharmacology_drug_design": 10,
+      "biochemistry_enzyme_kinetics": 10,
+      "crispr_gene_editing": 10,
+      "structural_biology": 10,
+      "genomics_variant_interpretation": 10,
+      "immunology_vaccine_design": 10,
+      "microbiology_antimicrobial": 10,
+      "oncology_cancer_biology": 10,
+      "neuroscience_neurotherapeutics": 10
+    },
+    "by_difficulty": {
+      "trivial": 20,
+      "easy": 20,
+      "medium": 20,
+      "hard": 20,
+      "expert": 20
+    }
+  }
+}
