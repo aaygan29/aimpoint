@@ -92,7 +92,7 @@ becomes a merged environment, and
 ## Quickstart
 
 ```bash
-git clone <this repository URL>
+git clone https://github.com/aaygan29/aimpoint.git
 cd aimpoint
 uv sync
 ```

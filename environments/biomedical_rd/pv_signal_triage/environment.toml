@@ -13,9 +13,9 @@ area = "biomedical-rd"
 field = "pharmacovigilance"
 subfield = "signal-detection"
 
-author_name = "Anonymous"
-author_email = "anonymous@example.com"
-author_organization = "withheld"
+author_name = "Aayush Gandhi"
+author_email = "aaygan29@gmail.com"
+author_organization = "The Sapient Company"
 
 status = "candidate"  # reference | candidate | accepted
 tags = [

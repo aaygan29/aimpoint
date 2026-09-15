@@ -2,8 +2,8 @@ version = "1.0"
 reward = "binary"
 
 [metadata]
-author_name = "Anonymous"
-author_email = "anonymous@example.com"
+author_name = "Aayush Gandhi"
+author_email = "aaygan29@gmail.com"
 difficulty = "hard"
 category = "safety-gated-clinical-stats"
 tags = ["mri", "mahalanobis", "abstention", "distribution-shift", "bootstrap", "aimpoint"]
