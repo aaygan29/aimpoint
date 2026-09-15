@@ -1,0 +1,9 @@
+{
+  "version": "1.0",
+  "tokens": [
+    "out_of_reference_support",
+    "insufficient_evidence",
+    "cohort_variance_too_high",
+    "requires_additional_modality"
+  ]
+}
