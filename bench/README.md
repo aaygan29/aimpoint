@@ -101,7 +101,7 @@ signal (typed disposition + rationale tokens diffed against a frozen adjudicatio
 The concrete input data files (profile_bravo.json, patient_ood.json, dataset_b.csv,
 ground_truth_a.csv, plus sha256 pins in `tests/expected.json`) are placeholders;
 authoring them is a mechanical follow-up that consumes the base task generators from
-[harbor-tasks](https://github.com/aaygan29/harbor-tasks). Grader logic and file layout
+harbor-tasks. Grader logic and file layout
 are shipped in full.
 
 ## Running the bench against aimpoint

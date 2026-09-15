@@ -3,12 +3,7 @@ title: "Aimpoint: open-source environments for beneficial AI capabilities"
 message: "If you use Aimpoint, please cite it."
 type: software
 authors:
-  - given-names: Aayush
-    family-names: Gandhi
-    email: aaygan29@gmail.com
-    orcid: "https://orcid.org/0009-0003-4649-0367"
-    affiliation: "The Sapient Company"
-repository-code: "https://github.com/aaygan29/aimpoint"
+  - name: "The authors"
 abstract: >-
   Aimpoint builds open-source RL environments and evaluations for the capabilities we want
   frontier AI to have, rather than only the ones we fear. It enforces three properties the

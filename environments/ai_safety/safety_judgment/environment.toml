@@ -13,10 +13,9 @@ area = "ai-safety"
 field = "safety-judgment"
 subfield = "request-adjudication"
 
-author_name = "Aayush Gandhi"
-author_email = "aaygan29@gmail.com"
-author_organization = "The Sapient Company"
-author_profile = "https://orcid.org/0009-0003-4649-0367"
+author_name = "Anonymous"
+author_email = "anonymous@example.com"
+author_organization = "withheld"
 
 status = "candidate"  # reference | candidate | accepted
 tags = [

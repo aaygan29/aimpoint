@@ -2,8 +2,8 @@ version = "1.0"
 reward = "binary"
 
 [metadata]
-author_name = "Aayush Gandhi"
-author_email = "aaygan29@gmail.com"
+author_name = "Anonymous"
+author_email = "anonymous@example.com"
 difficulty = "hard"
 category = "safety-gated-single-cell"
 tags = ["single-cell", "clustering", "tripwire", "abstention", "aimpoint"]
