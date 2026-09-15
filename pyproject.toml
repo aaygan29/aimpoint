@@ -34,7 +34,9 @@ dependencies = [
 dev = [
     "pytest>=8.0",
     "pytest-cov>=5.0",
-    "ruff>=0.6",
+    # Pinned: CI installs whatever `uv sync` resolves, and every new ruff release adds
+    # rules that turn an unrelated PR red. Bump deliberately, with the fixes in the same PR.
+    "ruff==0.16.7",
     "pyright>=1.1.380",
 ]
 

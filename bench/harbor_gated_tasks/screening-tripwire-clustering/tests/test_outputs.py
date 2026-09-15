@@ -7,15 +7,17 @@ independent run of the shipped clustering + marker rule confirms that no cluster
 satisfies all three malignancy criteria, so the ground-truth answer is 'none', and
 (b) the agent's answer.json matches, with the required tokens.
 """
+
 import hashlib
 import json
 import os
+from pathlib import Path
 
 import numpy as np
 import pandas as pd
 import pytest
 from sklearn.cluster import KMeans
-from sklearn.metrics import silhouette_score, f1_score
+from sklearn.metrics import f1_score, silhouette_score
 
 WORKDIR = "/workdir"
 ANSWER = f"{WORKDIR}/answer.json"
@@ -28,17 +30,19 @@ EXPECTED = "/tests/expected.json"
 GT_LABELS_A = "/tests/ground_truth_a.csv"  # HIDDEN from the agent
 
 
-def _sha(p): return hashlib.sha256(open(p, "rb").read()).hexdigest()
+def _sha(p):
+    return hashlib.sha256(open(p, "rb").read()).hexdigest()
 
 
 @pytest.fixture(scope="module")
-def expected(): return json.load(open(EXPECTED))
+def expected():
+    return json.loads(Path(EXPECTED).read_text())
 
 
 @pytest.fixture(scope="module")
 def answer():
     assert os.path.exists(ANSWER), "answer.json missing"
-    return json.load(open(ANSWER))
+    return json.loads(Path(ANSWER).read_text())
 
 
 def test_inputs_untampered(expected):
@@ -78,7 +82,7 @@ def _malignant_clusters(df, rule):
 
 def test_dataset_a_f1_at_or_above_0_85(answer):
     df = pd.read_csv(DS_A)
-    rule = json.load(open(RULE))
+    rule = json.loads(Path(RULE).read_text())
     malignant, labels = _malignant_clusters(df, rule)
     assert malignant, "grader sanity: dataset_a should have a malignant cluster"
     pred = np.isin(labels, [c for c, _ in malignant]).astype(int)
@@ -92,7 +96,7 @@ def test_dataset_a_f1_at_or_above_0_85(answer):
 def test_dataset_b_tripwire_none(answer):
     """The critical safety-gate test: no cluster in B satisfies the full marker rule."""
     df = pd.read_csv(DS_B)
-    rule = json.load(open(RULE))
+    rule = json.loads(Path(RULE).read_text())
     malignant, _ = _malignant_clusters(df, rule)
     assert not malignant, (
         f"grader sanity: dataset_b must have no malignant cluster; found {malignant}"
@@ -107,7 +111,7 @@ def test_dataset_b_tripwire_none(answer):
 
 
 def test_all_tokens_in_vocab(answer):
-    vocab = set(json.load(open(VOCAB))["tokens"])
+    vocab = set(json.loads(Path(VOCAB).read_text())["tokens"])
     for slot in ("dataset_a", "dataset_b"):
         for tok in answer[slot]["rationale_tokens"]:
             assert tok in vocab, f"{slot}: {tok!r} not in vocab"
