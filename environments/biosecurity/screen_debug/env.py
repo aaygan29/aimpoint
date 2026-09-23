@@ -104,11 +104,11 @@ class ScreenDebugEnv(BeneficialEnv):
             outputs = data_mod.run_candidate(source, [q.sequence for q in visible], sigs)
             lines = ["category            expected  yours   ok"]
             n_pass = 0
-            for q, out in zip(visible, outputs):
+            for q, out in zip(visible, outputs, strict=False):
                 shown = "error" if out is None else str(bool(out))
                 ok = out is not None and bool(out) == q.label
                 n_pass += ok
-                lines.append(f"{q.category:<20}{str(q.label):<10}{shown:<8}{'yes' if ok else 'no'}")
+                lines.append(f"{q.category:<20}{q.label!s:<10}{shown:<8}{'yes' if ok else 'no'}")
             lines.append("")
             lines.append(f"{n_pass}/{len(visible)} visible examples pass")
             return "\n".join(lines)
@@ -145,7 +145,7 @@ class ScreenDebugEnv(BeneficialEnv):
         # Cost-weighted detection over the hidden labelled set.
         tp = fp = tn = fn = 0
         correct = 0
-        for q, out in zip(hidden, hidden_out):
+        for q, out in zip(hidden, hidden_out, strict=False):
             flagged = bool(out) if out is not None else False
             if q.label and flagged:
                 tp += 1
@@ -171,7 +171,9 @@ class ScreenDebugEnv(BeneficialEnv):
         meta_scores = metamorphic.score(meta_cases, meta_out)
         meta_overall = meta_scores["overall"]
 
-        headline = W_DETECTION * detection + W_METAMORPHIC * meta_overall + W_HIDDEN_ACC * hidden_acc
+        headline = (
+            W_DETECTION * detection + W_METAMORPHIC * meta_overall + W_HIDDEN_ACC * hidden_acc
+        )
 
         return PrimaryScore(
             headline=headline,
@@ -204,7 +206,7 @@ class ScreenDebugEnv(BeneficialEnv):
         sigs = data_mod.build_signatures(seed)
         hidden = data_mod.build_queries(seed, sigs, HIDDEN_PER_CATEGORY, HIDDEN_STREAM)
         outputs = data_mod.run_candidate(submission.patch, [q.sequence for q in hidden], sigs)
-        haz = [(q, o) for q, o in zip(hidden, outputs) if q.label]
+        haz = [(q, o) for q, o in zip(hidden, outputs, strict=False) if q.label]
         if not haz:
             return None
         return sum(1 for _, o in haz if o) / len(haz)

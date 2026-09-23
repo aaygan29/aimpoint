@@ -102,9 +102,11 @@ def test_hardcoder_passes_visible_but_fails_hidden(env, scenarios):
     sigs = data.build_signatures(seed)
     source = baselines.hardcoder(scenario).patch
 
-    visible = data.build_queries(seed, sigs, baselines.VISIBLE_PER_CATEGORY, baselines.VISIBLE_STREAM)
+    visible = data.build_queries(
+        seed, sigs, baselines.VISIBLE_PER_CATEGORY, baselines.VISIBLE_STREAM
+    )
     vis_out = data.run_candidate(source, [q.sequence for q in visible], sigs)
-    vis_pass = sum(o == q.label for q, o in zip(visible, vis_out)) / len(visible)
+    vis_pass = sum(o == q.label for q, o in zip(visible, vis_out, strict=False)) / len(visible)
 
     headline = env.score_primary(scenario, baselines.hardcoder(scenario)).headline
     assert vis_pass == 1.0, "hardcoder should pass every visible example"

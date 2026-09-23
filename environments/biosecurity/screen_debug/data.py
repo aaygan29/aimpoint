@@ -27,7 +27,7 @@ import tempfile
 from dataclasses import dataclass
 from pathlib import Path
 
-from .screener_reference import max_identity, reference_screen, revcomp
+from .screener_reference import reference_screen, revcomp
 
 ALPHABET = "ACGT"
 THRESHOLD = 0.85
@@ -143,14 +143,18 @@ def _make_one(rng: _Rng, category: str, sigs: Signatures) -> str:
     raise ValueError(f"unknown category {category!r}")
 
 
-def build_queries(seed: int, sigs: Signatures, per_category: int, stream: str) -> list[LabeledQuery]:
+def build_queries(
+    seed: int, sigs: Signatures, per_category: int, stream: str
+) -> list[LabeledQuery]:
     """Generate a labelled query set. `stream` separates visible from hidden draws."""
     rng = _Rng(_sub_seed(seed, f"queries:{stream}"))
     out: list[LabeledQuery] = []
     for category in CATEGORIES:
         for _ in range(per_category):
             seq = _make_one(rng, category, sigs)
-            label = bool(reference_screen(seq, list(sigs.signatures), list(sigs.cleared), THRESHOLD))
+            label = bool(
+                reference_screen(seq, list(sigs.signatures), list(sigs.cleared), THRESHOLD)
+            )
             out.append(LabeledQuery(sequence=seq, label=label, category=category))
     return out
 
@@ -280,7 +284,7 @@ def _run_inprocess(
         except (ValueError, OSError):
             handler_set = False
     try:
-        exec(source, ns)  # noqa: S102 - by contract this is a screener module
+        exec(source, ns)
         screen = ns.get("screen")
         if not callable(screen):
             return [None] * n
@@ -350,5 +354,5 @@ def load_source_functions(source: str):
         path.write_text(source)
         spec = importlib.util.spec_from_file_location("s", path)
         mod = importlib.util.module_from_spec(spec)
-        spec.loader.exec_module(mod)  # noqa: S102
+        spec.loader.exec_module(mod)
         return mod

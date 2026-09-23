@@ -18,7 +18,7 @@ def score(cases: list[MetamorphicCase], outputs: list[bool | None]) -> dict[str,
     oracle's, so the reference screener passes every check by construction.
     """
     by_check: dict[str, list[bool]] = {}
-    for case, out in zip(cases, outputs):
+    for case, out in zip(cases, outputs, strict=False):
         passed = out is not None and bool(out) == case.expected
         by_check.setdefault(case.check, []).append(passed)
     result = {check: sum(v) / len(v) for check, v in by_check.items()}
