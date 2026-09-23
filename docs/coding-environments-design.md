@@ -89,7 +89,7 @@ and whose data it never exposes.
 
 ## Task ideas, ranked
 
-### 1. `screen_debug` — hardening a DNA synthesis screening pipeline (build first)
+### 1. `screen_debug`: hardening a DNA synthesis screening pipeline (build first)
 
 A synthesis-screening researcher has a homology-based screener that is meant to flag
 order fragments matching a hazard database. It has a planted defect from a fixed catalogue
@@ -110,24 +110,30 @@ screener so it recovers detection on held-out sequences.
 - Why it resists hacking: "flag everything" is the `refuse_everything` analogue and loses
   on the cost-weighted detection score; hardcoding fails hidden held-out sequences.
 
-### 2. `biotool_drift` — the TransformerLens analogue
+### 2. `biotool_drift`: the TransformerLens analogue (built)
 
-The agent computes a specific quantity through a real bioinformatics stack (Biopython,
-pysam, RDKit, ESM or Boltz output parsing, mmCIF/PDB structure handling) where the common
+The agent computes a specific quantity through a bioinformatics workflow where the common
 failure is a silent, safety-relevant bug: 0-based versus 1-based coordinates, BED versus
-GFF half-open intervals, strand, multi-chain structures, deprecated-API drift, reading the
-wrong field from a Boltz or AlphaFold confidence output. The headline is the computed
-quantity against a computed oracle; invariance checks catch coordinate and strand errors
-directly.
+GFF half-open intervals, strand, multi-chain structures, and reading the wrong field or
+range from a Boltz or AlphaFold confidence output. The headline is the computed quantity
+against a computed oracle; a correctness-anchored invariance battery catches coordinate,
+strand, chain, and field errors directly.
 
-### 3. `recompute_result` — reproduce a paper result the paper does not contain
+Built as four families (`coord_extract`, `strand_cds`, `multichain_dist`,
+`confidence_field`), stdlib-only to keep CI dependency-free. The model writes one `solve`
+function per scenario, scored on held-out records (60%) plus the invariance battery (40%).
+Baselines: `noop`, `reference` (the naive per-family convention bug), and adversarial
+`hardcoder` plus `plausible_junk`. A library-API variant (Biopython, pysam, RDKit) that
+reproduces those tools' exact footguns is a planned follow-up.
+
+### 3. `recompute_result`: reproduce a paper result the paper does not contain
 
 Give the methods and the raw data, hold out the result, and perturb the data (fresh seed,
 held-out subset) so the correct answer differs from the published headline. Guessing the
 paper number scores at chance. This directly converts "infer it from the paper" from a
 weakness into the thing being tested against.
 
-### 4. `analysis_audit` — find and fix the planted analysis bug
+### 4. `analysis_audit`: find and fix the planted analysis bug
 
 Hand the agent a biomedical analysis script with a subtle planted defect from a bug-class
 catalogue: train/test leakage, wrong multiple-testing correction, a batch confound, a
@@ -135,7 +141,7 @@ label swap. The agent must locate and fix it so the corrected pipeline reproduce
 held-out oracle result and passes a hidden unit test targeting that bug class. This is the
 "safety researchers use coding agents and they mess up" workflow in its purest form.
 
-### 5. `provenance_audit` — detect contamination or a spiked poison
+### 5. `provenance_audit`: detect contamination or a spiked poison
 
 Given a dataset and a model, write code that detects train/test leakage or an injected
 poison. Executable, defensive, and grounded in a computed detection rate.
