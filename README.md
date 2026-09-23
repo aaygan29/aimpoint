@@ -3,7 +3,7 @@
 **Open-source environments for the capabilities we want AI to have.**
 
 [![License](https://img.shields.io/badge/license-Apache%202.0-black.svg)](LICENSE)
-[![Environments](https://img.shields.io/badge/environments-4-white.svg)](environments/)
+[![Environments](https://img.shields.io/badge/environments-5-white.svg)](environments/)
 [![Built on Inspect](https://img.shields.io/badge/built%20on-Inspect-105864.svg)](https://inspect.aisi.org.uk/)
 
 We have good evals for what AI should not do: bioweapons uplift, cyber offense, persuasion.
@@ -81,6 +81,7 @@ You also get:
 | biomedical-rd | [`pv_signal_triage`](environments/biomedical_rd/pv_signal_triage/) | candidate | 151 | yes |
 | biomedical-rd | [`target_triage`](environments/biomedical_rd/target_triage/) | reference | 21 | yes |
 | biosecurity | [`screen_debug`](environments/biosecurity/screen_debug/) | candidate | 18 | yes |
+| biosecurity | [`biotool_drift`](environments/biosecurity/biotool_drift/) | candidate | 12 | yes |
 
 Areas follow the article's list, plus ones a contribution needed: `safety-research`,
 `cyber-defense`, `pandemic-preparedness`, `information-integrity`, `biomedical-rd`,
@@ -254,7 +255,14 @@ collapses on held-out data). Tests assert the correct fix beats both.
 
 Every signature is a synthetic random sequence, so the environment holds and produces no
 hazard information; it scores detection only, and exposes nothing useful for evasion or
-design. The design rationale for the whole track is in
+design.
+
+[`biotool_drift`](environments/biosecurity/biotool_drift/) is the track's second environment
+and its TransformerLens analogue: the failure mode is not the algorithm but the silent
+convention bugs that make a bioinformatics workflow return the wrong number with no error. The
+model writes one function across four families (coordinate base, strand, chain identity, and
+reading the right confidence field), scored on held-out records plus a correctness-anchored
+invariance battery. The design rationale for the whole track is in
 [docs/coding-environments-design.md](docs/coding-environments-design.md).
 
 ## Prior art, stated honestly
