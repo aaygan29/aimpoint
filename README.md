@@ -3,7 +3,7 @@
 **Open-source environments for the capabilities we want AI to have.**
 
 [![License](https://img.shields.io/badge/license-Apache%202.0-black.svg)](LICENSE)
-[![Environments](https://img.shields.io/badge/environments-3-white.svg)](environments/)
+[![Environments](https://img.shields.io/badge/environments-4-white.svg)](environments/)
 [![Built on Inspect](https://img.shields.io/badge/built%20on-Inspect-105864.svg)](https://inspect.aisi.org.uk/)
 
 We have good evals for what AI should not do: bioweapons uplift, cyber offense, persuasion.
@@ -80,6 +80,7 @@ You also get:
 | ai-safety | [`safety_judgment`](environments/ai_safety/safety_judgment/) | candidate | 67 | yes |
 | biomedical-rd | [`pv_signal_triage`](environments/biomedical_rd/pv_signal_triage/) | candidate | 151 | yes |
 | biomedical-rd | [`target_triage`](environments/biomedical_rd/target_triage/) | reference | 21 | yes |
+| biosecurity | [`screen_debug`](environments/biosecurity/screen_debug/) | candidate | 18 | yes |
 
 Areas follow the article's list, plus ones a contribution needed: `safety-research`,
 `cyber-defense`, `pandemic-preparedness`, `information-integrity`, `biomedical-rd`,
@@ -230,6 +231,31 @@ test fails.
 [known limits](environments/biomedical_rd/target_triage/environment.toml) first.
 
 ---
+
+## screen_debug: the execution track
+
+The three environments above share a shape: read a frozen snapshot, emit a ranked
+prediction. That shape has a known weakness. When the answer is recoverable from a model's
+priors, the model recalls it rather than reasoning to it, and a ranking metric can pay out
+for hedged guessing. A reward signal on that surface cannot always tell recall from
+research.
+
+[`screen_debug`](environments/biosecurity/screen_debug/) is the reference environment for a
+second track that closes that gap. It hands the model a defective DNA synthesis-order
+screener and scores what the repaired code *does* on held-out inputs. The ground truth is
+computed by running the correct screener at scoring time, so there is no stored answer to
+recall. Inputs are generated per scenario seed, so the correct output is in no corpus and
+differs across seeds. A metamorphic battery (reverse-complement, position, threshold
+monotonicity, exemption) checks properties any correct screener must satisfy, and carries a
+third of the headline, so a fix that passes the visible examples for the wrong reason is
+caught. Two runnable reward-hacks ship as adversarial baselines: `flag_everything` (maxes
+the recall proxy, loses the real score) and `hardcoder` (passes every visible example,
+collapses on held-out data). Tests assert the correct fix beats both.
+
+Every signature is a synthetic random sequence, so the environment holds and produces no
+hazard information; it scores detection only, and exposes nothing useful for evasion or
+design. The design rationale for the whole track is in
+[docs/coding-environments-design.md](docs/coding-environments-design.md).
 
 ## Prior art, stated honestly
 

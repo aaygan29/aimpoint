@@ -63,6 +63,36 @@ class Submission(BaseModel):
     abstention_reason: str = ""
 
 
+class PatchSubmission(Submission):
+    """A terminal answer that is a code artifact rather than a ranked shortlist.
+
+    The execution track (see `docs/coding-environments-design.md`) scores what the model's
+    code *does* when run on held-out inputs, not what it claims. The submission therefore
+    carries source, and the environment's `score_primary` executes it against a computed
+    oracle in a sandbox. Keeping this a distinct type from `RankedSubmission` means the
+    ranked path, its probes, and its scoring are untouched: a patch submission simply
+    exposes empty `items`/`ordered_ids`, so the fabrication probe and the transcript
+    summariser see "no claims" rather than crashing on a missing attribute.
+
+    `patch` is the full replacement module source by default. An environment may document a
+    unified-diff convention instead; the contract is whatever that environment's
+    instruction and scorer agree on, and nothing here parses it.
+    """
+
+    patch: str = Field(default="", description="The submitted code artifact (module source).")
+    notes: str = Field(default="", description="Free text. Never scored by a primary scorer.")
+
+    @property
+    def items(self) -> list[RankedItem]:
+        """Compatibility shim: a patch carries no ranked items."""
+        return []
+
+    @property
+    def ordered_ids(self) -> list[str]:
+        """Compatibility shim so ranked-path summarisers do not special-case this type."""
+        return []
+
+
 class RankedItem(BaseModel):
     """One entry in a ranked shortlist.
 

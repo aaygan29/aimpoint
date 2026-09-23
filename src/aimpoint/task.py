@@ -52,7 +52,9 @@ def aimpoint_scorer(env: BeneficialEnv, scenarios: dict[str, Scenario]) -> Score
         scenario = scenarios[state.metadata["scenario_id"]]
         record = read_episode(state)
 
-        submission = record.submission
+        # The execution track submits a code artifact through a separate channel; prefer it
+        # when present, and fall back to the ranked channel otherwise.
+        submission = record.patch_submission or record.submission
         if submission is None:
             return Score(
                 value=0.0,
